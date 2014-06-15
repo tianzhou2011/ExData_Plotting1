@@ -1,0 +1,16 @@
+rawfile <- file("household_power_consumption.txt","r")
+cat(grep("(^Date)|(^[1|2]/2/2007)",readLines(rawfile),value=TRUE),sep="\n",file="filtered.txt")
+close(rawfile)
+data=read.csv2("filtered.txt",header=TRUE,stringsAsFactors=F)
+
+x<-paste(data$Date,data$Time)
+x<-as.POSIXct(strptime(x,"%d/%m/%Y %H:%M:%S"))
+png("plot3.png",width=480,height=480)
+plot(x,as.numeric(data$Sub_metering_1),type="n",ylab="Energy sub metering",xlab="")
+lines(x,as.numeric(data$Sub_metering_1),col="Black")
+lines(x,as.numeric(data$Sub_metering_2),col="Red")
+lines(x,as.numeric(data$Sub_metering_3),col="Blue")
+legend("topright",lty=c(1,1),lwd=c(1.5,1.5),col=c("Black","Red","Blue"),legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+dev.off()
+
+file.remove("filtered.txt")
